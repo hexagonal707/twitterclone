@@ -14,7 +14,7 @@ class _PageNavigatorState extends State<PageNavigator> {
   late int _currentPageIndex = 0;
 
   Widget pages(int index) {
-    final routes = [HomePage(onPageSelected: _onPageChanged), ProfilePage()];
+    final routes = [HomePage(onPageSelected: _onPageChanged), const AccountPage()];
     return routes[index];
   }
 
@@ -28,7 +28,7 @@ class _PageNavigatorState extends State<PageNavigator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Twitter Clone'),
+        title: const Text('Twitter Clone'),
         
       ),
       bottomNavigationBar: NavigationBarTheme(
@@ -42,9 +42,9 @@ class _PageNavigatorState extends State<PageNavigator> {
               selectedIcon: Icon(Icons.home),
             ),
             NavigationDestination(
-              icon: Icon(Icons.search_outlined),
-              label: 'Search',
-              selectedIcon: Icon(Icons.search_rounded),
+              icon: Icon(Icons.person_outlined),
+              label: 'Account',
+              selectedIcon: Icon(Icons.person_rounded),
             ),
           ],
           selectedIndex: _currentPageIndex,

@@ -1,4 +1,5 @@
 import 'package:twitterclone/page_navigator.dart';
+import 'package:twitterclone/screens/createPost/create_post_page.dart';
 import 'package:twitterclone/screens/createProfile/create_profile_page.dart';
 import 'package:twitterclone/screens/home/home_page.dart';
 import 'package:twitterclone/screens/login/login_page.dart';
@@ -10,6 +11,7 @@ var appPages = [
   const HomePage(),
   const LoginPage(),
   const PageNavigator(),
+  const CreatePostPage(),
   const CreateProfilePage(savedEmail: '', savedPassword: ''),
   const SignUpPage(),
   const WelcomePage(),
@@ -19,6 +21,7 @@ var appPages = [
 var appRoutes = {
   HomePage.id: (context) => const HomePage(),
   LoginPage.id: (context) => const LoginPage(),
+  CreatePostPage.id: (context) => const CreatePostPage(),
   PageNavigator.id: (context) => const PageNavigator(),
   CreateProfilePage.id: (context) =>
       const CreateProfilePage(savedEmail: '', savedPassword: ''),
