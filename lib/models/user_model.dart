@@ -22,6 +22,7 @@ class User {
         'phoneNumber': phoneNumber,
         'email': email,
       };
+
   static User fromJson(Map<String, dynamic> json) => User(
         id: json['id'],
         firstName: json['firstName'],

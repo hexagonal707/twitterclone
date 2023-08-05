@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:twitterclone/data/post_data.dart';
 
 class CreatePostPage extends StatefulWidget {
   static const String id = 'create_post_page';
@@ -23,6 +25,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
+
+  addPostData(String content, DateTime time) async {
+    var provider = Provider.of<PostDataProvider>(context, listen: false);
+    await provider.addPostList(content, time);
+    provider.getPostList();
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -37,72 +47,71 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Theme(
-        data: ThemeData(
-          fontFamily: 'Inter',
-          brightness: MediaQuery.of(context).platformBrightness,
-          colorSchemeSeed: Colors.blueAccent,
-          useMaterial3: true,
-        ),
-        child: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CloseButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: FilledButton(
-                    onPressed: _isButtonActive
-                        ? () {
-                            setState(() {
-                              _isButtonActive;
-                            });
-                          }
-                        : null,
-                    child: const Text('Post'),
+  Widget build(BuildContext context) => Consumer<PostDataProvider>(
+        builder: (BuildContext context, PostDataProvider postDataProvider,
+            Widget? child) {
+          return GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CloseButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                )
-              ],
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 26.0, vertical: 18.0),
-                      child: TextFormField(
-                        controller: _contentController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        textInputAction: TextInputAction.newline,
-                        decoration: const InputDecoration(
-                          hintText: "What's on your mind?",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 20.0),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: FilledButton(
+                      onPressed: _isButtonActive
+                          ? (){
+                              setState(() {
+                                _isButtonActive;
+                              });
+                              addPostData(_contentController.value.text, DateTime.now());
+                              Navigator.pop(context);
+                            }
+                          : null,
+                      child: const Text('Post'),
+                    ),
+                  )
+                ],
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 26.0, vertical: 18.0),
+                        child: TextFormField(
+                          controller: _contentController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          textInputAction: TextInputAction.newline,
+                          decoration: const InputDecoration(
+                            hintText: "What's on your mind?",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 20.0),
+                          ),
                         ),
-                      ),
-                    ), //Reset Password Button
-                  ],
+                      ), //Reset Password Button
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 }
