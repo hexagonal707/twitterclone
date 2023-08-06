@@ -112,7 +112,7 @@ class _CustomPostContainerState extends State<CustomPostContainer> {
                                                 onTap: ()  {
                                                   if (index == 1) {
                                                      postDataProvider
-                                                        .deleteSalesData(widget
+                                                        .deletePostData(widget
                                                             .passedPostData
                                                             .postId);
 

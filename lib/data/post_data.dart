@@ -16,9 +16,9 @@ class PostDataProvider extends ChangeNotifier {
 
   getPostListFuture() async {
     var postIds = await getPostIds();
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    userData = await UserData.getUserData(uid);
+    userData = await UserData.getUserData(userId);
     var posts = await Future.wait(
       postIds.map(
         (postId) async => await getPostDataFuture(postId),
@@ -34,33 +34,28 @@ class PostDataProvider extends ChangeNotifier {
   addPostList(String content, DateTime dateTime) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final postId = randomId();
-    await FirebaseFirestore.instance.collection('post-data').doc(postId).set(
-        Post(postId: postId, userId: userId, content: content, time: dateTime)
+    await FirebaseFirestore.instance
+        .collection('user-data')
+        .doc(userId)
+        .collection('post-data')
+        .doc(postId)
+        .set(Post(
+                postId: postId,
+                userId: userId,
+                content: content,
+                time: dateTime)
             .toJson());
   }
 
-  deleteSalesData(String postId) async {
+  deletePostData(String postId) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    var thing = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
+        .collection('user-data')
+        .doc(userId)
         .collection('post-data')
-        .where('id', isEqualTo: postId)
-        .limit(1)
-        .get();
-    var some = await FirebaseFirestore.instance
-        .collection('post-data')
-        .where('userId', isEqualTo: userId)
-        .limit(1)
-        .get();
-
-    if (thing.docs.isEmpty && some.docs.isEmpty) {
-      print('delete failed');
-    } else {
-      await FirebaseFirestore.instance
-          .collection('post-data')
-          .doc(postId)
-          .delete();
-    }
+        .doc(postId)
+        .delete();
 
     // Updates list of post data ids
     List<Post> newPostData = [...?postDataList];
@@ -76,9 +71,12 @@ class PostDataProvider extends ChangeNotifier {
   }
 
   static Future<List<String>> getPostIds() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
     List<String> docIds = [];
 
     await FirebaseFirestore.instance
+        .collection('user-data')
+        .doc(userId)
         .collection('post-data')
         .get()
         .then((snapshot) {
@@ -91,7 +89,11 @@ class PostDataProvider extends ChangeNotifier {
   }
 
   static Future<Post> getPostDataFuture(postId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
     var snapshot = await FirebaseFirestore.instance
+        .collection('user-data')
+        .doc(userId)
         .collection('post-data')
         .doc(postId)
         .get();
@@ -101,16 +103,6 @@ class PostDataProvider extends ChangeNotifier {
       return Post.fromJson(data);
     } else {
       throw Exception('Post data is not available');
-    }
-  }
-
-  static Future<void> addPost(String post) async {
-    final docId = FirebaseFirestore.instance.collection('post-data').doc().id;
-    try {
-      await FirebaseFirestore.instance.collection('post-data').add(
-          Post(userId: docId, content: post, time: DateTime.now()).toJson());
-    } catch (e) {
-      throw Exception('Failed to add post: $e');
     }
   }
 }
