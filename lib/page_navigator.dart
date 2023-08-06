@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:twitterclone/screens/home/home_page.dart';
-import 'package:twitterclone/screens/profile/profile_page.dart';
+import 'package:twitterclone/screens/account/account_page.dart';
 
 class PageNavigator extends StatefulWidget {
   static const String id = 'page_navigator';
+
   const PageNavigator({super.key});
 
   @override
@@ -14,7 +15,10 @@ class _PageNavigatorState extends State<PageNavigator> {
   late int _currentPageIndex = 0;
 
   Widget pages(int index) {
-    final routes = [HomePage(onPageSelected: _onPageChanged), const AccountPage()];
+    final routes = [
+      HomePage(onPageSelected: _onPageChanged),
+      const AccountPage()
+    ];
     return routes[index];
   }
 
@@ -28,8 +32,11 @@ class _PageNavigatorState extends State<PageNavigator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Twitter Clone'),
-        
+        centerTitle: true,
+        title: const Text(
+          'Twitter Clone',
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+        ),
       ),
       bottomNavigationBar: NavigationBarTheme(
         data: const NavigationBarThemeData(

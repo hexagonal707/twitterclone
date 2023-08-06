@@ -69,34 +69,46 @@ class _HomePageState extends State<HomePage> {
         var postDataList = postDataProvider.postDataList;
         var userData = postDataProvider.userData;
 
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              showModalBottomSheet(
-                useSafeArea: true,
-                isScrollControlled: true,
-                enableDrag: true,
-                context: context,
-                builder: (context) {
-                  return const CreatePostPage();
-                },
-              );
-            },
-          ),
-          body: ListView.builder(
-                  itemCount: postDataList?.length ?? 15,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (postDataList != null && userData != null) {
-                      return CustomPostContainer(
-                        name: '${userData.firstName} ${userData.lastName}',
-                        content: postDataList[index].content, time: currentDate(postDataList[index]), username: userData.username,
-                      );
-                    } else {
-                      return const CustomPostContainerShimmer();
-                    }
+        return RefreshIndicator(
+          onRefresh: () async{
+           await postDataProvider.getPostList();
+          },
+          child: Scaffold(
+
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                  useSafeArea: true,
+                  isScrollControlled: true,
+                  enableDrag: true,
+                  context: context,
+                  builder: (context) {
+                    return const CreatePostPage();
                   },
-                ),
+                );
+              },
+            ),
+            body: ListView.separated(
+              itemCount: postDataList?.length ?? 15,
+              separatorBuilder: (context, int index) {
+                return const Divider(height: 1);
+              },
+              itemBuilder: (BuildContext context, int index) {
+                if (postDataList != null && userData != null) {
+                  return CustomPostContainer(
+                    onTap: (){},
+                    name: '${userData.firstName} ${userData.lastName}',
+                    content: postDataList[index].content,
+                    time: currentDate(postDataList[index]),
+                    username: userData.username,
+                  );
+                } else {
+                  return const CustomPostContainerShimmer();
+                }
+              },
+            ),
+          ),
         );
       },
     );

@@ -32,6 +32,7 @@ class _State extends State<LoginPage> {
       await _firebaseauth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
+      if (!mounted) return;
       Navigator.pushAndRemoveUntil(
           context,
           CustomPageRouteBuilder(
