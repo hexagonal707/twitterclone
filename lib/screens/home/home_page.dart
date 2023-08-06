@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
 
   String currentDate(dynamic data) {
     var currentDate =
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     var docDate = DateTime(data.time.year, data.time.month, data.time.day);
     if (currentDate == docDate) {
       return DateFormat('hh:mm a').format(data.time);
@@ -64,7 +64,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Provider.of<PostDataProvider>(context, listen: false).getPostListFuture();
-
   }
 
   @override
@@ -127,11 +126,14 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (BuildContext context, int index) {
                 if (postDataList != null && userData != null) {
                   return CustomPostContainer(
+                    passedPostData: postDataList[index],
                     onTap: () {},
+                    modalBottomSheetOnTap: () {},
                     name: '${userData.firstName} ${userData.lastName}',
                     content: postDataList[index].content,
                     time: currentDate(postDataList[index]),
                     username: userData.username,
+                    selectedPostIndex: index,
                   );
                 } else {
                   return const CustomPostContainerShimmer();

@@ -14,28 +14,65 @@ class PostDataProvider extends ChangeNotifier {
   List<Post>? postDataList;
   u.User? userData;
 
-
   getPostListFuture() async {
     var postIds = await getPostIds();
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     userData = await UserData.getUserData(uid);
-    postDataList = await Future.wait(
+    var posts = await Future.wait(
       postIds.map(
         (postId) async => await getPostDataFuture(postId),
       ),
     );
+
+    posts.sort((post1, post2) => post2.time.compareTo(post1.time));
+
+    postDataList = posts;
     notifyListeners();
   }
 
-
   addPostList(String content, DateTime dateTime) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    final docId = FirebaseFirestore.instance.collection('post-data').doc().id;
-    await FirebaseFirestore.instance
+    final postId = randomId();
+    await FirebaseFirestore.instance.collection('post-data').doc(postId).set(
+        Post(postId: postId, userId: userId, content: content, time: dateTime)
+            .toJson());
+  }
+
+  deleteSalesData(String postId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    var thing = await FirebaseFirestore.instance
         .collection('post-data')
-        .doc()
-        .set(Post(id:docId, userId: userId, content: content, time: dateTime).toJson());
+        .where('id', isEqualTo: postId)
+        .limit(1)
+        .get();
+    var some = await FirebaseFirestore.instance
+        .collection('post-data')
+        .where('userId', isEqualTo: userId)
+        .limit(1)
+        .get();
+
+    if (thing.docs.isEmpty && some.docs.isEmpty) {
+      print('delete failed');
+    } else {
+      await FirebaseFirestore.instance
+          .collection('post-data')
+          .doc(postId)
+          .delete();
+    }
+
+    // Updates list of post data ids
+    List<Post> newPostData = [...?postDataList];
+    newPostData.removeWhere((postData) => postData.postId == postId);
+
+    postDataList = newPostData;
+    notifyListeners();
+  }
+
+  static String randomId() {
+    final docId = FirebaseFirestore.instance.collection('post-data').doc().id;
+    return docId;
   }
 
   static Future<List<String>> getPostIds() async {
