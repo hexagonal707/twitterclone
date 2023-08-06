@@ -22,20 +22,22 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Consumer<PostDataProvider>(builder: (context, provider, child) {
       return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          title: const Text(
+            'Account',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 36.0,
+            ),
+          ),
+        ),
         body: SafeArea(
           child: ListView(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
-                child: Text(
-                  'Account',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 36.0,
-                  ),
-                ),
-              ),
 
+              const SizedBox(height: 16.0),
               //Profile Header
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 18.0),

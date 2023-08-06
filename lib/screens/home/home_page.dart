@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  String currentDate(dynamic data) {
+  /*String currentDate(dynamic data) {
     var currentTime = DateTime.now();
     var docTime = data.time;
     var difference = currentTime.difference(docTime);
@@ -47,12 +47,24 @@ class _HomePageState extends State<HomePage> {
       var docDate = DateTime(docTime.year, docTime.month, docTime.day);
       return DateFormat('MMM d').format(docDate);
     }
+  }*/
+
+  String currentDate(dynamic data) {
+    var currentDate =
+    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    var docDate = DateTime(data.time.year, data.time.month, data.time.day);
+    if (currentDate == docDate) {
+      return DateFormat('hh:mm a').format(data.time);
+    } else {
+      return DateFormat('MMM d').format(docDate);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    Provider.of<PostDataProvider>(context, listen: false).getPostList();
+    Provider.of<PostDataProvider>(context, listen: false).getPostListFuture();
+
   }
 
   @override
@@ -70,12 +82,28 @@ class _HomePageState extends State<HomePage> {
         var userData = postDataProvider.userData;
 
         return RefreshIndicator(
-          onRefresh: () async{
-           await postDataProvider.getPostList();
+          onRefresh: () async {
+            await postDataProvider.getPostListFuture();
           },
           child: Scaffold(
-
+            appBar: AppBar(
+              bottom: const PreferredSize(
+                preferredSize: Size(double.infinity, 1.0),
+                child: Divider(
+                  height: 1.0,
+                  thickness: 3.0,
+                ),
+              ),
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              centerTitle: true,
+              title: const Text(
+                'Twitter Clone',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
+              ),
+            ),
             floatingActionButton: FloatingActionButton(
+              shape: const StadiumBorder(),
               child: const Icon(Icons.add),
               onPressed: () {
                 showModalBottomSheet(
@@ -90,6 +118,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             body: ListView.separated(
+              padding: const EdgeInsets.only(
+                  bottom: kFloatingActionButtonMargin + 50.0),
               itemCount: postDataList?.length ?? 15,
               separatorBuilder: (context, int index) {
                 return const Divider(height: 1);
@@ -97,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (BuildContext context, int index) {
                 if (postDataList != null && userData != null) {
                   return CustomPostContainer(
-                    onTap: (){},
+                    onTap: () {},
                     name: '${userData.firstName} ${userData.lastName}',
                     content: postDataList[index].content,
                     time: currentDate(postDataList[index]),

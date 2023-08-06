@@ -66,19 +66,23 @@ class CustomPostContainer extends StatelessWidget {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(3.0),
-                              child: Text('• $time'),
+                              child: Text(
+                                '• $time',
+                                style: const TextStyle(fontSize: 12.0),
+                              ),
                             ),
                             InkWell(
                               borderRadius: BorderRadius.circular(25.0),
                               onTap: () {
                                 List<String> options = ['Edit', 'Delete'];
                                 showModalBottomSheet(
+                                  useSafeArea: true,
                                   showDragHandle: true,
                                   context: context,
                                   builder: (context) {
                                     return SizedBox(
                                       width: 640.0,
-                                      height: 110.0,
+                                      height: 140.0,
                                       child: ListView.builder(
                                         physics: const ClampingScrollPhysics(),
                                         itemCount: options.length,

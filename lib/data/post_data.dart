@@ -8,13 +8,14 @@ import '../models/post_model.dart';
 
 class PostDataProvider extends ChangeNotifier {
   PostDataProvider() {
-    getPostList();
+    getPostListFuture();
   }
 
   List<Post>? postDataList;
   u.User? userData;
 
-  getPostList() async {
+
+  getPostListFuture() async {
     var postIds = await getPostIds();
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -26,6 +27,7 @@ class PostDataProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
 
   addPostList(String content, DateTime dateTime) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;

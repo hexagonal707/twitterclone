@@ -31,13 +31,7 @@ class _PageNavigatorState extends State<PageNavigator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Twitter Clone',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
-        ),
-      ),
+
       bottomNavigationBar: NavigationBarTheme(
         data: const NavigationBarThemeData(
             labelBehavior: NavigationDestinationLabelBehavior.alwaysHide),

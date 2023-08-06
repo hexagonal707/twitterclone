@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:twitterclone/data/post_data.dart';
 
@@ -29,7 +30,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   addPostData(String content, DateTime time) async {
     var provider = Provider.of<PostDataProvider>(context, listen: false);
     await provider.addPostList(content, time);
-    provider.getPostList();
+    provider.getPostListFuture();
   }
 
 
@@ -94,6 +95,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 26.0, vertical: 18.0),
                         child: TextFormField(
+                          maxLength: 280,
                           controller: _contentController,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
